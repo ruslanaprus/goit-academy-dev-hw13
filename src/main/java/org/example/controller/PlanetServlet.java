@@ -48,7 +48,7 @@ public class PlanetServlet extends HttpServlet {
             }
             case "/findPlanetById" -> {
                 String planetId = req.getParameter("planetId");
-                Planet planetById = planetService.findPlanetById(planetId);
+                Planet planetById = planetService.findById(planetId);
                 if (planetById != null) {
                     context.setVariable("planet", planetById);
                     context.setVariable("message", "Planet found successfully.");
@@ -82,7 +82,7 @@ public class PlanetServlet extends HttpServlet {
                 }
 
                 try {
-                    isUpdated = planetService.updatePlanet(planetId, updatedPlanet);
+                    isUpdated = planetService.update(planetId, updatedPlanet);
                     context.setVariable("message", isUpdated ? "Planet updated successfully." : "Failed to update planet.");
                 } catch (Exception e) {
                     context.setVariable("message", "Error updating planet: " + e.getMessage());
@@ -97,7 +97,7 @@ public class PlanetServlet extends HttpServlet {
             }
             case "/deletePlanetById" -> {
                 String planetId = req.getParameter("planetId");
-                boolean isDeleted = planetService.deletePlanet(planetId);
+                boolean isDeleted = planetService.delete(planetId);
                 context.setVariable("message", isDeleted ? "Planet deleted successfully." : "Failed to delete planet.");
                 context.setVariable("action", "deletePlanetById");
                 templateConfig.process("planet", context, res);
@@ -110,7 +110,7 @@ public class PlanetServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         Context context = new Context();
         try {
-            planetService.savePlanet(req.getReader());
+            planetService.save(req.getReader());
             context.setVariable("message", "Planet created successfully.");
             res.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {

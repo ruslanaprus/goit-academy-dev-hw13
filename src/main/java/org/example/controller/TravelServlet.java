@@ -89,7 +89,7 @@ public class TravelServlet extends HttpServlet {
                 }
 
                 try {
-                    isUpdated = clientService.updateClient(Long.parseLong(clientId), updatedClient);
+                    isUpdated = clientService.update(Long.parseLong(clientId), updatedClient);
                     context.setVariable("message", isUpdated ? "Client updated successfully." : "Failed to update client.");
                 } catch (Exception e) {
                     context.setVariable("message", "Error updating client: " + e.getMessage());
@@ -104,7 +104,7 @@ public class TravelServlet extends HttpServlet {
             }
             case "/deleteClientById" -> {
                 String clientId = req.getParameter("clientId");
-                boolean isDeleted = clientService.deleteClient(Long.parseLong(clientId));
+                boolean isDeleted = clientService.delete(Long.parseLong(clientId));
                 context.setVariable("message", isDeleted ? "Client deleted successfully." : "Failed to delete client.");
                 context.setVariable("action", "deleteClient");
                 templateConfig.process("client", context, res);
@@ -117,7 +117,7 @@ public class TravelServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         Context context = new Context();
         try {
-            clientService.saveClient(req.getReader());
+            clientService.save(req.getReader());
             context.setVariable("message", "Client created successfully.");
             res.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
