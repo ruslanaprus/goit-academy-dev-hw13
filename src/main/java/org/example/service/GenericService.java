@@ -26,8 +26,14 @@ public class GenericService<T, ID> implements IGenericService<T, ID> {
         dao.save(entity);
     }
 
-    public void save(BufferedReader payload) throws IOException {
-        T entity = objectMapper.readValue(payload, entityClass);
+    @Override
+    public void save(BufferedReader payload) {
+        T entity = null;
+        try {
+            entity = objectMapper.readValue(payload, entityClass);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         logger.info("Saving entity from payload: {}", entity);
         dao.save(entity);
         logger.info("Entity saved successfully from payload");
