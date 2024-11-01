@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planet Management</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #0d6efd;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+
+        table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #0d6efd;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Planet Manager</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/createPlanetForm">Create Planet</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/updatePlanetForm">Update Planet</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/findPlanetByIdForm">Find Planet</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/findAllPlanets">Find All</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/deletePlanetByIdForm">Delete Planet</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div th:if="${message}" class="alert alert-info">
+        <p th:text="${message}"></p>
+    </div>
+    <div th:if="${action == 'createPlanetForm'}" class="form-container">
+        <h2>Create Planet</h2>
+        <form id="planet-form" action="/createPlanet" method="post">
+            <div class="mb-3">
+                <label for="newPlanetId" class="form-label">Name:</label>
+                <input type="text" id="newPlanetId" class="form-control" name="id" placeholder="Enter planet id">
+            </div>
+            <div class="mb-3">
+                <label for="planetName" class="form-label">Name:</label>
+                <input type="text" id="planetName" class="form-control" name="name" placeholder="Enter planet name">
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="submit-button">Submit</button>
+        </form>
+    </div>
+
+    <div th:if="${action == 'updatePlanetForm'}" class="form-container">
+        <h2>Update Planet</h2>
+        <form action="/updatePlanet">
+            <div class="mb-3">
+                <label for="planetId" class="form-label">Planet ID:</label>
+                <input type="text" id="planetToUpdateId" class="form-control" name="planetId"
+                       placeholder="Enter planet ID">
+            </div>
+            <div class="mb-3">
+                <label for="planetName" class="form-label">Name:</label>
+                <input type="text" id="newPlanetName" class="form-control" name="name" placeholder="Enter new name">
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="submit-button-2">Submit</button>
+        </form>
+    </div>
+
+    <div th:if="${action == 'findPlanetByIdForm'}" class="form-container mt-3">
+        <h2>Find Planet by ID</h2>
+        <form action="/findPlanetById" method="get">
+            <div class="mb-3">
+                <label for="planetId" class="form-label">Planet ID:</label>
+                <input type="text" id="planetId" class="form-control" name="planetId" placeholder="Enter planet ID">
+                <button type="submit" class="btn btn-primary mt-3 w-100">Find</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${action == 'planetDetails'}" class="form-container mt-3">
+        <h2>Planet Details</h2>
+        <p><strong>Id:</strong> <span th:text="${planet.getId()}"></span></p>
+        <p><strong>Name:</strong> <span th:text="${planet.getName()}"></span></p>
+    </div>
+
+    <div th:if="${action == 'allPlanetDetails'}" class="form-container mt-3">
+        <h2>All Planets</h2>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="element :${planets}">
+                <td th:text="${element.getId()}"></td>
+                <td th:text="${element.getName()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${action == 'deletePlanetByIdForm'}" class="form-container mt-3">
+        <h2>Delete Planet by ID</h2>
+        <form action="/deletePlanetById" method="get">
+            <div class="mb-3">
+                <label for="planetId" class="form-label">Planet ID:</label>
+                <input type="text" id="planetIdToDelete" class="form-control" name="planetId"
+                       placeholder="Enter planet ID">
+                <button type="submit" class="btn btn-danger mt-3 w-100">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('submit-button').addEventListener('click', function (event) {
+            event.preventDefault();
+            const form = document.getElementById("planet-form");
+            const formData = new FormData(form);
+            const formObj = Object.fromEntries(formData);
+            const jsonData = JSON.stringify(formObj);
+            console.log(jsonData);
+
+            fetch('/createPlanet', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            }).then(response => {
+                if (response.ok) {
+                    alert('Planet created successfully!');
+                } else {
+                    alert('Error creating planet.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred.');
+            });
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
