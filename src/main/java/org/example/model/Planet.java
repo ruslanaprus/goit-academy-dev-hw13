@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "planets")
 @Data
@@ -18,4 +20,10 @@ public class Planet {
     private String id;
     @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "fromPlanet", cascade = CascadeType.ALL)
+    private List<Ticket> ticketsFrom;
+
+    @OneToMany(mappedBy = "toPlanet", cascade = CascadeType.ALL)
+    private List<Ticket> ticketsTo;
 }
