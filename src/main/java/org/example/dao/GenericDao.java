@@ -15,11 +15,12 @@ import java.util.Map;
 
 public class GenericDao<T, ID> {
     private static final Logger logger = LoggerFactory.getLogger(GenericDao.class);
-    private final SessionFactory sessionFactory = HibernateConfig.getInstance().getSessionFactory();
+    private SessionFactory sessionFactory;
     private final Class<T> entityClass;
 
-    public GenericDao(Class<T> entityClass) {
+    public GenericDao(Class<T> entityClass, SessionFactory sessionFactory) {
         this.entityClass = entityClass;
+        this.sessionFactory = sessionFactory;
     }
 
     public void save(T entity) {

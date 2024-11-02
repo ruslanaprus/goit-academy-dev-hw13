@@ -1,7 +1,9 @@
 package org.example.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.config.HibernateConfig;
 import org.example.dao.GenericDao;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,8 @@ public class GenericService<T, ID> implements IGenericService<T, ID> {
 
     public GenericService(Class<T> entityClass) {
         this.entityClass = entityClass;
-        this.dao = new GenericDao<>(entityClass);
+        SessionFactory sessionFactory = HibernateConfig.getInstance().getSessionFactory();
+        this.dao = new GenericDao<>(entityClass, sessionFactory);
     }
 
     @Override
