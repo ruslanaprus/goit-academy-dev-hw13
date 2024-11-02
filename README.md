@@ -1,6 +1,6 @@
 # Travel Management System
 
-The Travel Management System is a Java-based web application that manages client and planet records using PostgreSQL database. It uses Hibernate ORM for data access, Flyway for database migration, and Thymeleaf for rendering HTML templates. The primary purpose of this project is to provide a backend service for managing clients and planets, allowing CRUD operations through HTTP requests.
+The Travel Management System is a Java-based web application that manages clients, planets, and tickets using PostgreSQL database. It uses Hibernate ORM for data access, Flyway for database migration, and Thymeleaf for rendering HTML templates. The primary purpose of this project is to provide a backend service for managing clients, planets, and tickets allowing CRUD operations through HTTP requests.
 
 ## Table of Contents
 1. [Project Structure](#project-structure)
@@ -15,10 +15,14 @@ The project is structured as follows:
 
 - **`src/main/java/org/example/`**: Contains the Java source code.
     -  **`config/`**: Configuration classes for Hibernate (`HibernateConfig.java`) and Thymeleaf (`TemplateConfig.java`).
-    - **`model/`**: Entity classes (`Client.java`, `Planet.java`) representing the database tables.
+    - **`model/`**: Entity classes (`Client.java`, `Planet.java`, `Ticket.java`) representing the database tables.
+    - **`dto/`**: Data Transfer Object (`TicketDTO.java`) for managing ticket data in queries.
     - **`dao/`**: Contains the `GenericDao` class for common database operations.
-    - **`service/`**: Business logic classes (`ClientService.java`, `PlanetService.java`) to handle client and planet operations.
-    - **`controller/`**: Servlet classes (`TravelServlet.java`, `PlanetServlet.java`) that handle HTTP requests and map them to appropriate service methods.
+    - **`service/`**:
+      - Business logic classes (`ClientService.java`, `PlanetService.java`, `TicketService.java`) to handle client and planet operations.
+      - An interface `IGenericService<T, ID>` has been added to support a consistent and scalable structure for CRUD operations.
+      - The `GenericService<T, ID>` class implements `IGenericService<T, ID>` to provide reusable CRUD functionality. Key services extend `GenericService`, allowing each of them to inherit common data access methods.
+    - **`controller/`**: Servlet classes (`TravelServlet.java`, `PlanetServlet.java`, `TicketServlet.java`) that handle HTTP requests and map them to appropriate service methods.
 - **`src/main/resources/`**: Contains the database migration scripts in the `db/migration` folder. Contains templates used by Thymeleaf for rendering HTML pages in the `templates` folder.
 - **`build.gradle`**: Configuration file for Gradle build and dependencies.
 - **`hibernate.properties`**: Contains Hibernate configuration properties.
@@ -48,10 +52,14 @@ The project is structured as follows:
     - Create, read, update, and delete planets.
     - Search for a planet by ID.
     - Retrieve a list of all planets.
-3. **Database Integration**:
+3. **Ticket Management**:
+   - Create, read, update, and delete tickets
+   - Search for a ticket by ID.
+   - Retrieve a list of all tickets with details about clients and departure/destination.
+4. **Database Integration**:
     - Uses Hibernate ORM to interact with PostgreSQL database.
     - Flyway is used for version control and managing database migrations.
-4. **HTML Templating**:
+5. **HTML Templating**:
     - Uses Thymeleaf templates for rendering client and planet management forms and views.
 
 ## Setup Instructions
@@ -134,3 +142,11 @@ docker logs travel-servlet
 - Update a planet: Use the form at `/updatePlanetForm` with the planet ID and new details.
 - Delete a planet: Use the form at `/deletePlanetByIdForm` and submit the ID.
 - List all planets: Access the page at `/findAllPlanets`.
+
+**Ticket Operations**:
+
+- Create a new planet: Navigate to `/createTicketForm` and fill out the form.
+- Find a planet by ID: Use the form at `/findTicketByIdForm` and submit the ID.
+- Update a planet: Use the form at `/updateTicketForm` with the planet ID and new details.
+- Delete a planet: Use the form at `/deleteTicketByIdForm` and submit the ID.
+- List all planets: Access the page at `/findAllTickets`.
