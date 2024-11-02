@@ -52,7 +52,7 @@ public class TicketServlet extends HttpServlet {
             }
             case "/findTicketById" -> {
                 Long ticketId = Long.valueOf(req.getParameter("ticketsID"));
-                Ticket ticketById = ticketService.findById(ticketId);
+                TicketDTO ticketById = ticketService.findTicketDetailsById(ticketId);
                 if (ticketById != null) {
                     context.setVariable("ticket", ticketById);
                     context.setVariable("message", "Ticket found successfully.");

@@ -5,11 +5,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 public class GenericDao<T, ID> {
     private static final Logger logger = LoggerFactory.getLogger(GenericDao.class);
@@ -53,16 +55,16 @@ public class GenericDao<T, ID> {
         }
     }
 
-    public List<T> findWithQuery(String hql, Object... params) {
+    public <R> List<R> findWithQuery(String hql, Class<R> resultClass, Map<String, Object> params) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            var query = session.createQuery(hql, entityClass);
+            Query<R> query = session.createQuery(hql, resultClass);
 
-            for (int i = 0; i < params.length; i++) {
-                query.setParameter(i, params[i]);
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                query.setParameter(entry.getKey(), entry.getValue());
             }
 
-            List<T> results = query.getResultList();
+            List<R> results = query.getResultList();
             transaction.commit();
             return results;
         }

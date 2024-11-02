@@ -6,11 +6,17 @@ import org.example.model.Client;
 import org.example.model.Planet;
 import org.example.model.Ticket;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TicketService extends GenericService<Ticket, Long> {
+    private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
+
     private static TicketService instance;
 
     public TicketService() {
@@ -33,14 +39,6 @@ public class TicketService extends GenericService<Ticket, Long> {
         }
     }
 
-    public List<Ticket> findAllWithDetails() {
-        try (Session session = HibernateConfig.getInstance().getSessionFactory().openSession()) {
-            return session.createQuery(
-                            "SELECT t FROM Ticket t JOIN FETCH t.client JOIN FETCH t.fromPlanet JOIN FETCH t.toPlanet", Ticket.class)
-                    .getResultList();
-        }
-    }
-
     public Ticket createTicketWithIds(Long clientId, String fromPlanetId, String toPlanetId) {
         Client client = new ClientService().findById(clientId);
         Planet fromPlanet = new PlanetService().findById(fromPlanetId);
@@ -59,4 +57,20 @@ public class TicketService extends GenericService<Ticket, Long> {
         save(ticket);
         return ticket;
     }
+
+    public TicketDTO findTicketDetailsById(Long ticketId) {
+        String hql = "SELECT new org.example.dto.TicketDTO(t.id, t.createdAt, c.id, c.name, fp.id, fp.name, tp.id, tp.name) " +
+                "FROM Ticket t JOIN t.client c JOIN t.fromPlanet fp JOIN t.toPlanet tp WHERE t.id = :ticketId";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ticketId", ticketId);
+
+        List<TicketDTO> results = findWithQuery(hql, TicketDTO.class, params);
+        if (results.isEmpty()) {
+            return null;
+        }
+        logger.info("ticket found {}", results);
+        return results.get(0);
+    }
+
 }

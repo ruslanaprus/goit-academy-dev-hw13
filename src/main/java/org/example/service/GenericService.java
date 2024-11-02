@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class GenericService<T, ID> implements IGenericService<T, ID> {
     private static final Logger logger = LoggerFactory.getLogger(GenericService.class);
@@ -22,7 +23,6 @@ public class GenericService<T, ID> implements IGenericService<T, ID> {
 
     @Override
     public void save(T entity) {
-        logger.info("Saving entity: {}", entity);
         dao.save(entity);
     }
 
@@ -71,5 +71,9 @@ public class GenericService<T, ID> implements IGenericService<T, ID> {
             logger.error("Failed to delete entity with id: {}, {}", id, e.getMessage());
             return false;
         }
+    }
+
+    public <R> List<R> findWithQuery(String hql, Class<R> resultClass, Map<String, Object> params){
+        return dao.findWithQuery(hql, resultClass, params);
     }
 }

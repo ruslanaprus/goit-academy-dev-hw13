@@ -113,6 +113,7 @@
         </form>
     </div>
 
+    <!-- Find Ticket -->
     <div th:if="${action == 'findTicketByIdForm'}" class="form-container mt-3">
         <h2>Find Ticket by ID</h2>
         <form action="/findTicketById">
@@ -129,6 +130,12 @@
         <h2>Ticket Details</h2>
         <p><strong>ID:</strong> <span th:text="${ticket.getId()}"></span></p>
         <p><strong>Created At:</strong> <span th:text="${ticket.getCreatedAt()}"></span></p>
+        <p><strong>Client Id:</strong> <span th:text="${ticket.getClientId()}"></span></p>
+        <p><strong>Client Name:</strong> <span th:text="${ticket.getClientName()}"></span></p>
+        <p><strong>Departure Planet Id:</strong> <span th:text="${ticket.getFromPlanetId()}"></span></p>
+        <p><strong>Departure:</strong> <span th:text="${ticket.getFromPlanetName()}"></span></p>
+        <p><strong>Destination Planet Id:</strong> <span th:text="${ticket.getToPlanetId()}"></span></p>
+        <p><strong>Destination:</strong> <span th:text="${ticket.getToPlanetName()}"></span></p>
     </div>
 
     <!-- All Tickets Display -->
