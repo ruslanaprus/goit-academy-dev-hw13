@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Management</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #0d6efd;
+        }
+        table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background-color: #0d6efd;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Ticket Manager</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/createTicketForm">Create Ticket</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/updateTicketForm">Update Ticket</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/findTicketByIdForm">Find Ticket</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/findAllTickets">Find All</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/deleteTicketByIdForm">Delete Ticket</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div th:if="${message}" class="alert alert-info">
+        <p th:text="${message}"></p>
+    </div>
+
+    <!-- Create Ticket Form -->
+    <div th:if="${action == 'createTicketForm'}" class="form-container">
+        <h2>Create Ticket</h2>
+        <form id="ticket-form"  action="/createTicket" method="post">
+            <div class="mb-3">
+                <label for="clientId" class="form-label">Client ID:</label>
+                <input type="number" id="clientId" class="form-control" name="clientId" required>
+            </div>
+            <div class="mb-3">
+                <label for="fromPlanetId" class="form-label">From Planet ID:</label>
+                <input type="text" id="ticketFromId" class="form-control" name="fromPlanetId" required>
+            </div>
+            <div class="mb-3">
+                <label for="toPlanetId" class="form-label">To Planet ID:</label>
+                <input type="text" id="ticketToId" class="form-control" name="toPlanetId" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Create Ticket</button>
+        </form>
+    </div>
+
+    <!-- Update Ticket Form -->
+    <div th:if="${action == 'updateTicketForm'}" class="form-container mt-3">
+        <h2>Update Ticket</h2>
+        <form action="/updateTicket">
+            <div class="mb-3">
+                <label for="ticketId" class="form-label">Ticket ID:</label>
+                <input type="text" id="ticketId" class="form-control" name="ticketId" required>
+            </div>
+            <div class="mb-3">
+                <label for="fromPlanetId" class="form-label">From Planet ID:</label>
+                <input type="text" id="fromPlanetId" class="form-control" name="fromPlanetId">
+            </div>
+            <div class="mb-3">
+                <label for="toPlanetId" class="form-label">To Planet ID:</label>
+                <input type="text" id="toPlanetId" class="form-control" name="toPlanetId">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Update Ticket</button>
+        </form>
+    </div>
+
+    <div th:if="${action == 'findTicketByIdForm'}" class="form-container mt-3">
+        <h2>Find Ticket by ID</h2>
+        <form action="/findTicketById">
+            <div class="mb-3">
+                <label for="ticketsID" class="form-label">Ticket ID:</label>
+                <input type="text" id="ticketsID" class="form-control" name="ticketsID" placeholder="Enter ticket ID">
+                <button type="submit" class="btn btn-primary mt-3 w-100">Find</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Ticket Details Display -->
+    <div th:if="${action == 'ticketDetails'}" class="form-container mt-3">
+        <h2>Ticket Details</h2>
+        <p><strong>ID:</strong> <span th:text="${ticket.getId()}"></span></p>
+        <p><strong>Created At:</strong> <span th:text="${ticket.getCreatedAt()}"></span></p>
+    </div>
+
+    <!-- All Tickets Display -->
+    <div th:if="${action == 'allTicketDetails'}" class="form-container mt-3">
+        <h2>All Tickets</h2>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Created At</th>
+                <th>Client ID</th>
+                <th>Departure</th>
+                <th>Destination</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ticket : ${tickets}">
+                <td th:text="${ticket.id}"></td>
+                <td th:text="${ticket.createdAt}"></td>
+                <td th:text="${ticket.clientId}"></td>
+                <td th:text="${ticket.fromPlanetName}"></td>
+                <td th:text="${ticket.toPlanetName}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:if="${action == 'deleteTicketByIdForm'}" class="form-container mt-3">
+    <h2>Delete Ticket by ID</h2>
+    <form action="/deleteTicketById" method="get">
+        <div class="mb-3">
+            <label for="ticketId" class="form-label">Planet ID:</label>
+            <input type="text" id="ticketIdToDelete" class="form-control" name="ticketId"
+                   placeholder="Enter ticket ID">
+            <button type="submit" class="btn btn-danger mt-3 w-100">Delete</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('submit-button').addEventListener('click', function (event) {
+            event.preventDefault();
+            const form = document.getElementById("ticket-form");
+            const formData = new FormData(form);
+            const formObj = Object.fromEntries(formData);
+            const jsonData = JSON.stringify(formObj);
+            console.log(jsonData);
+
+            fetch('/createTicket', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            }).then(response => {
+                if (response.ok) {
+                    alert('Planet created successfully!');
+                } else {
+                    alert('Error creating ticket.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred.');
+            });
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

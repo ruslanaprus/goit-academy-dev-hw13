@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "tickets")
@@ -20,7 +20,7 @@ public class Ticket {
     @SequenceGenerator(name = "tickets_seq", sequenceName = "seq_tickets_id", allocationSize = 1)
     private Long id;
     @Column(name = "created_at")
-    private Date createdAt;
+    private Timestamp createdAt;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)

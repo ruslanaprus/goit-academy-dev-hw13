@@ -53,6 +53,21 @@ public class GenericDao<T, ID> {
         }
     }
 
+    public List<T> findWithQuery(String hql, Object... params) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            var query = session.createQuery(hql, entityClass);
+
+            for (int i = 0; i < params.length; i++) {
+                query.setParameter(i, params[i]);
+            }
+
+            List<T> results = query.getResultList();
+            transaction.commit();
+            return results;
+        }
+    }
+
     public int update(ID id, T updatedEntity) {
         logger.debug("Opening session for updating entity with ID: {}", id);
         try (Session session = sessionFactory.openSession()) {
