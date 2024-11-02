@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class TicketService extends GenericService<Ticket, Long> {
         ticket.setClient(client);
         ticket.setFromPlanet(fromPlanet);
         ticket.setToPlanet(toPlanet);
-        ticket.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        ticket.setCreatedAt(Timestamp.from(Instant.now()));
 
         save(ticket);
         return ticket;
