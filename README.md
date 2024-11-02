@@ -75,8 +75,8 @@ The project is structured as follows:
 
 1. **Clone the repository**:
 ```shell
-git clone git@github.com:ruslanaprus/goit-academy-dev-hw12.git
-cd goit-academy-dev-hw12
+git clone git@github.com:ruslanaprus/goit-academy-dev-hw13.git
+cd goit-academy-dev-hw13
 ```
 2. **Database Configuration**: Copy the `.env.example` file into `.env`, and populate it with your DB details (you might need to change the GOIT_DB_URL if yours is different).
 
