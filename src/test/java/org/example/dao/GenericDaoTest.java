@@ -15,7 +15,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class GenericDaoTest {
+class GenericDaoTest {
 
     @Mock
     private SessionFactory sessionFactory;
@@ -62,7 +62,7 @@ public class GenericDaoTest {
     }
 
     @Test
-    public void testSave_Success() {
+    void testSave_Success() {
         MockEntity entity = new MockEntity();
         entity.setName("Test Entity");
 
@@ -74,7 +74,32 @@ public class GenericDaoTest {
     }
 
     @Test
-    public void testFindAll_ReturnsList() {
+    void testFindById_EntityExists() {
+        MockEntity entity = new MockEntity();
+        entity.setId(1L);
+
+        when(session.get(MockEntity.class, 1L)).thenReturn(entity);
+
+        MockEntity result = dao.findById(1L);
+
+        assertEquals(entity, result);
+        verify(session).get(MockEntity.class, 1L);
+        verify(transaction).commit();
+    }
+
+    @Test
+    void testFindById_EntityDoesNotExist() {
+        when(session.get(MockEntity.class, 1L)).thenReturn(null);
+
+        MockEntity result = dao.findById(1L);
+
+        assertNull(result);
+        verify(session).get(MockEntity.class, 1L);
+        verify(transaction).commit();
+    }
+
+    @Test
+    void testFindAll_ReturnsList() {
         List<MockEntity> expectedList = List.of(new MockEntity(), new MockEntity());
 
         doReturn(expectedList).when(dao).findAll();
@@ -86,7 +111,7 @@ public class GenericDaoTest {
     }
 
     @Test
-    public void testFindWithQuery_ReturnsResults() {
+    void testFindWithQuery_ReturnsResults() {
         String hql = "from MockEntity where name = :name";
         Map<String, Object> params = Map.of("name", "test");
 
@@ -99,7 +124,39 @@ public class GenericDaoTest {
     }
 
     @Test
-    public void testDelete_EntityExists() {
+    void testUpdate_EntityExists() {
+        MockEntity existingEntity = new MockEntity();
+        existingEntity.setId(1L);
+        existingEntity.setName("Old Name");
+
+        MockEntity updatedEntity = new MockEntity();
+        updatedEntity.setName("New Name");
+
+        when(session.get(MockEntity.class, 1L)).thenReturn(existingEntity);
+
+        int result = dao.update(1L, updatedEntity);
+
+        assertEquals(1, result);
+        assertEquals("New Name", existingEntity.getName());
+        verify(transaction).commit();
+    }
+
+    @Test
+    void testUpdate_EntityDoesNotExist() {
+        MockEntity updatedEntity = new MockEntity();
+        updatedEntity.setName("New Name");
+
+        when(session.get(MockEntity.class, 1L)).thenReturn(null);
+
+        int result = dao.update(1L, updatedEntity);
+
+        assertEquals(0, result);
+        verify(session).get(MockEntity.class, 1L);
+        verify(transaction, never()).commit();
+    }
+
+    @Test
+    void testDelete_EntityExists() {
         MockEntity entity = new MockEntity();
         entity.setId(1L);
 

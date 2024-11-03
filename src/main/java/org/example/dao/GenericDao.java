@@ -1,6 +1,5 @@
 package org.example.dao;
 
-import org.example.config.HibernateConfig;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 public class GenericDao<T, ID> {
     private static final Logger logger = LoggerFactory.getLogger(GenericDao.class);
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
     private final Class<T> entityClass;
 
     public GenericDao(Class<T> entityClass, SessionFactory sessionFactory) {
